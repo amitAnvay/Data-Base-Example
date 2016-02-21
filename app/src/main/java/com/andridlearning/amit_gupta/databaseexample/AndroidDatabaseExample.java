@@ -35,10 +35,14 @@ public class AndroidDatabaseExample extends ListActivity implements AdapterView.
         sqliteHelper.insertStudent(new Student("Kevin Macdonald", "Science"));
         sqliteHelper.insertStudent(new Student("Sasha Johnson", "History"));
 
+        setListData();
+        getListView().setOnItemClickListener(this);
+    }
+
+    private void setListData(){
         list =  sqliteHelper.getAllStudents();
 
         ArrayList arrayList = new ArrayList();
-        getListView().setOnItemClickListener(this);
 
         for(int i=0; i < list.size(); i++) {
             Student student = (Student) list.get(i);
@@ -46,6 +50,7 @@ public class AndroidDatabaseExample extends ListActivity implements AdapterView.
         }
         arrayAdapter = new ArrayAdapter(this, R.layout.row_layout, R.id.listText, arrayList);
         setListAdapter(arrayAdapter);
+
     }
 
     @Override
@@ -81,15 +86,6 @@ public class AndroidDatabaseExample extends ListActivity implements AdapterView.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        list = sqliteHelper.getAllStudents();
-
-        ArrayList arrayList = new ArrayList();
-
-        for(int i =0; i < list.size(); i++){
-            Student student = (Student)list.get(i);
-            arrayList.add(i, student.getName());
-        }
-        arrayAdapter = new ArrayAdapter(this, R.layout.row_layout,R.id.listText, arrayList);
-        setListAdapter(arrayAdapter);
+        setListData();
     }
 }
