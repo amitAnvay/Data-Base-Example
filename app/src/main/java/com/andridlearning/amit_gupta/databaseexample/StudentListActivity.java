@@ -63,13 +63,18 @@ public class StudentListActivity extends Activity {
     }
 
     public void update(View v) {
-        Toast.makeText(getApplicationContext(), "This Student is updated.", Toast.LENGTH_SHORT).show();
-        selectedStudent.setName(((EditText) findViewById(R.id.titleEdit)).getText().toString());
-        selectedStudent.setSubject(((EditText) findViewById(R.id.authorEdit)).getText().toString());
-
-        // update book with changes
-        sqliteHelper.updateStudentInfo(selectedStudent);
-        finish();
+        String name = ((EditText) findViewById(R.id.titleEdit)).getText().toString();
+        String subject = ((EditText) findViewById(R.id.authorEdit)).getText().toString();
+        if(!name.equals("") && !subject.equals("")) {
+            selectedStudent.setName(name);
+            selectedStudent.setSubject(subject);
+            // update book with changes
+            sqliteHelper.updateStudentInfo(selectedStudent);
+            Toast.makeText(getApplicationContext(), "This Student is updated.", Toast.LENGTH_SHORT).show();
+            finish();
+        }else {
+            Toast.makeText(getApplicationContext(), "Name or Subject cannot be empty", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void delete(View v) {

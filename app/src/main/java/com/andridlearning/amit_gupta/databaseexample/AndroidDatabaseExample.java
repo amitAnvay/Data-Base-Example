@@ -1,5 +1,6 @@
 package com.andridlearning.amit_gupta.databaseexample;
 
+import android.app.FragmentManager;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.andridlearning.amit_gupta.databaseexample.db.MySqliteHelper;
 import com.andridlearning.amit_gupta.databaseexample.model.Student;
@@ -26,36 +28,40 @@ public class AndroidDatabaseExample extends ListActivity implements AdapterView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_android_database_example);
 
-        sqliteHelper.onUpgrade(sqliteHelper.getWritableDatabase(), 0, 0);
-        sqliteHelper.insertStudent(new Student("George Smith", "History"));
-        sqliteHelper.insertStudent(new Student("Mark Woolf", "English"));
-        sqliteHelper.insertStudent(new Student("Chris Mayers", "Science"));
-        sqliteHelper.insertStudent(new Student("John Smith", "Biology"));
-        sqliteHelper.insertStudent(new Student("Rhonda Rodes", "English"));
-        sqliteHelper.insertStudent(new Student("Kevin Macdonald", "Science"));
-        sqliteHelper.insertStudent(new Student("Sasha Johnson", "History"));
+        // sqliteHelper.onUpgrade(sqliteHelper.getWritableDatabase(), 0, 0);
+//        sqliteHelper.insertStudent(new Student("George Smith", "History"));
+//        sqliteHelper.insertStudent(new Student("Mark Woolf", "English"));
+//        sqliteHelper.insertStudent(new Student("Chris Mayers", "Science"));
+//        sqliteHelper.insertStudent(new Student("John Smith", "Biology"));
+//        sqliteHelper.insertStudent(new Student("Rhonda Rodes", "English"));
+//        sqliteHelper.insertStudent(new Student("Kevin Macdonald", "Science"));
+//        sqliteHelper.insertStudent(new Student("Sasha Johnson", "History"));
 
-        setListData();
         getListView().setOnItemClickListener(this);
+        setListData();
+
     }
 
-    private void setListData(){
-        list =  sqliteHelper.getAllStudents();
+    void setListData() {
+        list = sqliteHelper.getAllStudents();
 
         ArrayList arrayList = new ArrayList();
 
-        for(int i=0; i < list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             Student student = (Student) list.get(i);
             arrayList.add(i, student.getName());
         }
         arrayAdapter = new ArrayAdapter(this, R.layout.row_layout, R.id.listText, arrayList);
         setListAdapter(arrayAdapter);
+        TextView emptyTextView = new TextView(this);
+        emptyTextView.setText("Please Use the Add Button to add Data");
+        getListView().setEmptyView(emptyTextView);
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_android_database_example, menu);
         return true;
     }
 
@@ -69,6 +75,8 @@ public class AndroidDatabaseExample extends ListActivity implements AdapterView.
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.add) {
+            onCreateDialog();
         }
 
         return super.onOptionsItemSelected(item);
@@ -76,10 +84,10 @@ public class AndroidDatabaseExample extends ListActivity implements AdapterView.
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Student student = (Student)list.get(i);
+        Student student = (Student) list.get(i);
         Intent intent = new Intent(this, StudentListActivity.class);
         intent.putExtra("student", student.getId());
-        startActivityForResult(intent,1);
+        startActivityForResult(intent, 1);
     }
 
     @Override
@@ -87,5 +95,12 @@ public class AndroidDatabaseExample extends ListActivity implements AdapterView.
         super.onActivityResult(requestCode, resultCode, data);
 
         setListData();
+    }
+
+    public void onCreateDialog() {
+
+        FragmentManager fm = getFragmentManager();
+        AddStudentDialogFragment dialogFragment = new AddStudentDialogFragment();
+        dialogFragment.show(fm, "Add Student Fragment");
     }
 }
